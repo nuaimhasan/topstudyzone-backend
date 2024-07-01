@@ -20,7 +20,7 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Category.find({});
+    const result = await Category.find({}).populate("classes");
     res.status(200).json({
       success: true,
       message: "Categories get success",
@@ -37,7 +37,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Category.findById(id);
+    const result = await Category.findById(id).populate("classes");
     res.status(200).json({
       success: true,
       message: "Category get success",

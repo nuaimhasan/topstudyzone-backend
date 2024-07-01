@@ -5,6 +5,7 @@ const subjectSchema = new mongoose.Schema(
     name: {
       type: String,
       require: true,
+      unique: true,
     },
     order: {
       type: Number,

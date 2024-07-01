@@ -20,7 +20,24 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Subject.find({});
+    const result = await Subject.find({}).populate("category class");
+    res.status(200).json({
+      success: true,
+      message: "Subjects get success",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+exports.getSingle = async (req, res) => {
+  const id = req?.params?.id;
+  try {
+    const result = await Subject.findById(id).populate("category class");
     res.status(200).json({
       success: true,
       message: "Subject get success",

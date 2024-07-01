@@ -11,6 +11,7 @@ const categorySchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
+    classes: [{ type: mongoose.Types.ObjectId, ref: "Class" }],
   },
   { timestamps: false }
 );

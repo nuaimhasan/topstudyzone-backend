@@ -1,15 +1,29 @@
 const Class = require("../../models/academy/class.model");
+const Category = require("../../models/academy/category.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
     const result = await Class.create(data);
 
-    res.status(200).json({
-      success: true,
-      message: "Class add success",
-      data: result,
-    });
+    if (result?._id) {
+      await Category.updateOne(
+        { _id: data?.category },
+        { $push: { classes: result?._id } }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Class add success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "something went wront!",
+        data: result,
+      });
+    }
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -20,7 +34,24 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Class.find({});
+    const result = await Class.find({}).populate("category");
+    res.status(200).json({
+      success: true,
+      message: "Classes get success",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+exports.getSingle = async (req, res) => {
+  const id = req?.params?.id;
+  try {
+    const result = await Class.findById(id).populate("category");
     res.status(200).json({
       success: true,
       message: "Class get success",
