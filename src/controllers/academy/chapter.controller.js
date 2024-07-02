@@ -1,15 +1,29 @@
 const Chapter = require("../../models/academy/chapter.model");
+const Subject = require("../../models/academy/subject.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
     const result = await Chapter.create(data);
 
-    res.status(200).json({
-      success: true,
-      message: "Chapter add success",
-      data: result,
-    });
+    if (result?._id) {
+      await Subject.updateOne(
+        { _id: data?.subject },
+        { $push: { chapters: result?._id } }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Chapter add success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "something went wront!",
+        data: result,
+      });
+    }
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -20,7 +34,26 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Chapter.find({});
+    const result = await Chapter.find({}).populate("category class subject");
+    res.status(200).json({
+      success: true,
+      message: "Chapters get success",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+exports.getSingle = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await Chapter.findById(id).populate(
+      "category class subject"
+    );
     res.status(200).json({
       success: true,
       message: "Chapter get success",
@@ -74,20 +107,34 @@ exports.update = async (req, res) => {
 
 exports.destoy = async (req, res) => {
   try {
-    const result = await Chapter.findByIdAndDelete(req?.params?.id);
+    const { id } = req?.params;
+    const chapter = await Chapter.findById(id);
 
-    if (!result) {
-      return res.status(404).json({
+    if (!chapter) {
+      return res.status(400).json({
         success: false,
-        error: "Chapter delete problem!",
+        error: "chapter not found!",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Chapter delete success",
-      data: result,
-    });
+    const subject = chapter?.subject;
+
+    const result = await Chapter.findByIdAndDelete(id);
+
+    if (result?._id) {
+      await Subject.updateOne({ _id: subject }, { $pull: { chapters: id } });
+
+      res.status(200).json({
+        success: true,
+        message: "Chapter delete success",
+        data: result,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        error: "something went wront!",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,

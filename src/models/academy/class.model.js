@@ -15,6 +15,7 @@ const classSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Category",
     },
+    subjects: [{ type: mongoose.Types.ObjectId, ref: "Subject" }],
   },
   { timestamps: false }
 );

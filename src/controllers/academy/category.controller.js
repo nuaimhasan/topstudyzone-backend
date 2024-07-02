@@ -20,7 +20,7 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Category.find({}).populate("classes");
+    const result = await Category.find({}).populate("classes").sort("order");
     res.status(200).json({
       success: true,
       message: "Categories get success",

@@ -34,7 +34,9 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Class.find({}).populate("category");
+    const result = await Class.find({})
+      .populate("category subjects")
+      .sort("order");
     res.status(200).json({
       success: true,
       message: "Classes get success",
@@ -51,7 +53,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Class.findById(id).populate("category");
+    const result = await Class.findById(id).populate("category subjects");
     res.status(200).json({
       success: true,
       message: "Class get success",
@@ -105,20 +107,33 @@ exports.update = async (req, res) => {
 
 exports.destoy = async (req, res) => {
   try {
-    const result = await Class.findByIdAndDelete(req?.params?.id);
+    const { id } = req?.params;
+    const clas = await Class.findById(id);
 
-    if (!result) {
-      return res.status(404).json({
+    if (!clas) {
+      return res.status(400).json({
         success: false,
-        error: "Class delete problem!",
+        error: "class not found!",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Class delete success",
-      data: result,
-    });
+    const category = clas?.category;
+
+    const result = await Class.findByIdAndDelete(id);
+
+    if (result?._id) {
+      await Category.updateOne({ _id: category }, { $pull: { classes: id } });
+
+      res.status(200).json({
+        success: true,
+        message: "Class delete success",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "something went wront!",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,

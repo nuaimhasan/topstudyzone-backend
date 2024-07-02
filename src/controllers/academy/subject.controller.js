@@ -1,15 +1,29 @@
 const Subject = require("../../models/academy/subject.model");
+const Class = require("../../models/academy/class.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
     const result = await Subject.create(data);
 
-    res.status(200).json({
-      success: true,
-      message: "Subject add success",
-      data: result,
-    });
+    if (result?._id) {
+      await Class.updateOne(
+        { _id: data?.class },
+        { $push: { subjects: result?._id } }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Subject add success",
+        data: result,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "something went wront!",
+        data: result,
+      });
+    }
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -20,7 +34,9 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Subject.find({}).populate("category class");
+    const result = await Subject.find({})
+      .populate("category class")
+      .sort("order");
     res.status(200).json({
       success: true,
       message: "Subjects get success",
@@ -91,20 +107,34 @@ exports.update = async (req, res) => {
 
 exports.destoy = async (req, res) => {
   try {
-    const result = await Subject.findByIdAndDelete(req?.params?.id);
+    const { id } = req?.params;
+    const subject = await Subject.findById(id);
 
-    if (!result) {
-      return res.status(404).json({
+    if (!subject) {
+      return res.status(400).json({
         success: false,
-        error: "Subject delete problem!",
+        error: "subject not found!",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Subject delete success",
-      data: result,
-    });
+    const clas = subject?.class;
+
+    const result = await Subject.findByIdAndDelete(id);
+
+    if (result?._id) {
+      await Class.updateOne({ _id: clas }, { $pull: { subjects: id } });
+
+      res.status(200).json({
+        success: true,
+        message: "Subject delete success",
+        data: result,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        error: "something went wront!",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
