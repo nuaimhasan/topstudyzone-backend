@@ -2,12 +2,8 @@ const mongoose = require("mongoose");
 
 const contentSchema = new mongoose.Schema(
   {
-    name: {
+    content: {
       type: String,
-      require: true,
-    },
-    order: {
-      type: Number,
       require: true,
     },
     category: {

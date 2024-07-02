@@ -4,12 +4,21 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const port = process.env.port || 5000;
 const apiRoutes = require("./src/routes/index");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));
+
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+    parameterLimit: 100000,
+    limit: "500mb",
+  })
+);
 
 // Web cache validation and conditional requests in Http
 // app.set("etag", WEB_CACHE);

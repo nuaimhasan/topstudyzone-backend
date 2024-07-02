@@ -35,7 +35,7 @@ exports.insert = async (req, res) => {
 exports.get = async (req, res) => {
   try {
     const result = await Subject.find({})
-      .populate("category class")
+      .populate("category class chapters")
       .sort("order");
     res.status(200).json({
       success: true,
@@ -53,7 +53,9 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Subject.findById(id).populate("category class");
+    const result = await Subject.findById(id).populate(
+      "category class chapters"
+    );
     res.status(200).json({
       success: true,
       message: "Subject get success",

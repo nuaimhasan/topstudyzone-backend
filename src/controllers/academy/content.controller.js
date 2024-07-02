@@ -20,7 +20,28 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Content.find({});
+    const result = await Content.find({}).populate(
+      "category class subject chapter"
+    );
+    res.status(200).json({
+      success: true,
+      message: "Contents get success",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+exports.getSingle = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Content.findById(id).populate(
+      "category class subject chapter"
+    );
     res.status(200).json({
       success: true,
       message: "Content get success",
