@@ -33,8 +33,12 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { subject } = req.query;
   try {
-    const result = await Chapter.find({}).populate("category class subject");
+    let query = {};
+    if (subject) query.subject = subject;
+
+    const result = await Chapter.find(query).populate("category class subject");
     res.status(200).json({
       success: true,
       message: "Chapters get success",
