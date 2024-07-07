@@ -5,6 +5,7 @@ const contentSchema = new mongoose.Schema(
     content: {
       type: String,
       require: true,
+      unique: false,
     },
     category: {
       type: mongoose.Types.ObjectId,

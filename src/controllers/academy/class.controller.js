@@ -33,10 +33,15 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { category } = req.query;
   try {
-    const result = await Class.find({})
+    let query = {};
+    if (category) query.category = category;
+
+    const result = await Class.find(query)
       .populate("category subjects")
       .sort("order");
+
     res.status(200).json({
       success: true,
       message: "Classes get success",

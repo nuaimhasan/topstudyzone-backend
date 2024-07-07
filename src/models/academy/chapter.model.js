@@ -5,6 +5,7 @@ const chapterSchema = new mongoose.Schema(
     name: {
       type: String,
       require: true,
+      unique: false,
     },
     order: {
       type: Number,

@@ -33,8 +33,12 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { cls } = req.query;
   try {
-    const result = await Subject.find({})
+    let query = {};
+    if (cls) query.class = cls;
+
+    const result = await Subject.find(query)
       .populate("category class chapters")
       .sort("order");
     res.status(200).json({

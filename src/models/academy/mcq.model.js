@@ -5,7 +5,7 @@ const academyMCQSchema = new mongoose.Schema(
     name: {
       type: String,
       require: true,
-      unique: true,
+      unique: false,
     },
     category: {
       type: mongoose.Types.ObjectId,
