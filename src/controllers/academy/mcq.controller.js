@@ -19,8 +19,14 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { subject } = req.query;
   try {
-    const result = await AcademyMCQ.find({});
+    let query = {};
+    if (subject && subject !== "undefined") query.subject = subject;
+
+    const result = await AcademyMCQ.find(query).populate(
+      "category class subject"
+    );
     res.status(200).json({
       success: true,
       message: "Academy MCQ get success",

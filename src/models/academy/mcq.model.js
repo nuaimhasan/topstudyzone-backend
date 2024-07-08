@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 
 const academyMCQSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      require: true,
-      unique: false,
-    },
     category: {
       type: mongoose.Types.ObjectId,
       ref: "Category",
@@ -19,12 +14,28 @@ const academyMCQSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Subject",
     },
-    chapter: {
-      type: mongoose.Types.ObjectId,
-      ref: "Chapter",
+    question: {
+      type: String,
+      require: true,
+    },
+    points: {
+      type: Array,
+      require: true,
+    },
+    ans: {
+      type: String,
+      require: true,
+    },
+    videoLink: {
+      type: String,
+      require: true,
+    },
+    explain: {
+      type: String,
+      require: true,
     },
   },
-  { timestamps: false }
+  { timestamps: true }
 );
 
 const AcademyMCQ = mongoose.model("AcademyMCQ", academyMCQSchema);

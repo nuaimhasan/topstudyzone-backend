@@ -5,7 +5,7 @@ const {
   update,
   destoy,
   getSingle,
-} = require("../../controllers/academy/category.controller");
+} = require("../../controllers/academy/mcq.controller");
 const router = express.Router();
 
 router.get("/all", get);
