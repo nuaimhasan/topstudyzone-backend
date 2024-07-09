@@ -1,4 +1,6 @@
 const AcademyMCQ = require("../../models/academy/mcq.model");
+const { calculatePagination } = require("../../utils/calculatePagination");
+const { pick } = require("../../utils/pick");
 
 exports.insert = async (req, res) => {
   const data = req?.body;
@@ -19,17 +21,30 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const paginationOptions = pick(req.query, ["page", "limit"]);
+  const { page, limit, skip } = calculatePagination(paginationOptions);
   const { subject } = req.query;
   try {
     let query = {};
     if (subject && subject !== "undefined") query.subject = subject;
 
-    const result = await AcademyMCQ.find(query).populate(
-      "category class subject"
-    );
+    const result = await AcademyMCQ.find(query)
+      .skip(skip)
+      .limit(limit)
+      .populate("category class subject");
+
+    const total = await AcademyMCQ.countDocuments(query);
+    const pages = Math.ceil(parseInt(total) / parseInt(limit));
+
     res.status(200).json({
       success: true,
       message: "Academy MCQ get success",
+      meta: {
+        total,
+        pages,
+        page,
+        limit,
+      },
       data: result,
     });
   } catch (err) {
