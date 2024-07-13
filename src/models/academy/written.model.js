@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const academyMCQSchema = new mongoose.Schema(
+const academyWrittenSchema = new mongoose.Schema(
   {
     category: {
       type: mongoose.Types.ObjectId,
@@ -20,10 +20,6 @@ const academyMCQSchema = new mongoose.Schema(
     },
     question: {
       type: String,
-      require: true,
-    },
-    points: {
-      type: Array,
       require: true,
     },
     ans: {
@@ -48,6 +44,6 @@ const academyMCQSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const AcademyMCQ = mongoose.model("AcademyMCQ", academyMCQSchema);
+const AcademyWritten = mongoose.model("AcademyWritten", academyWrittenSchema);
 
-module.exports = AcademyMCQ;
+module.exports = AcademyWritten;
