@@ -23,15 +23,18 @@ exports.insert = async (req, res) => {
 exports.get = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
   const { page, limit, skip } = calculatePagination(paginationOptions);
-  const { subject } = req.query;
+  const { subject, chapter } = req.query;
   try {
     let query = {};
-    if (subject && subject !== "undefined") query.subject = subject;
+    if (subject && subject !== "undefined" && subject !== "null")
+      query.subject = subject;
+    if (chapter && chapter !== "undefined" && chapter !== "null")
+      query.chapter = chapter;
 
     const result = await AcademyMCQ.find(query)
       .skip(skip)
       .limit(limit)
-      .populate("category class subject");
+      .populate("category class subject chapter");
 
     const total = await AcademyMCQ.countDocuments(query);
     const pages = Math.ceil(parseInt(total) / parseInt(limit));

@@ -14,6 +14,10 @@ const academyMCQSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Subject",
     },
+    chapter: {
+      type: mongoose.Types.ObjectId,
+      ref: "Chapter",
+    },
     question: {
       type: String,
       require: true,

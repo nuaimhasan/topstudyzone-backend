@@ -19,10 +19,17 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { chapter } = req.query;
+
   try {
-    const result = await Content.find({}).populate(
+    let query = {};
+    if (chapter && chapter !== "undefined" && chapter !== "null")
+      query.chapter = chapter;
+
+    const result = await Content.find(query).populate(
       "category class subject chapter"
     );
+
     res.status(200).json({
       success: true,
       message: "Contents get success",
