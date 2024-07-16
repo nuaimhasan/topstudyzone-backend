@@ -28,9 +28,13 @@ router.use("/academy/modelTest", modelTestRouters);
 const admissionSubjectRoutes = require("./admission/subject.routes");
 const admissionChapterRoutes = require("./admission/chapter.routes");
 const admissionContentRoutes = require("./admission/content.routes");
+const universityRoutes = require("./admission/university.routes");
+const admissionMcqRouters = require("./admission/mcq.routes");
 
 router.use("/admission/subject", admissionSubjectRoutes);
 router.use("/admission/chapter", admissionChapterRoutes);
 router.use("/admission/content", admissionContentRoutes);
+router.use("/admission/university", universityRoutes);
+router.use("/admission/mcq", admissionMcqRouters);
 
 module.exports = router;
