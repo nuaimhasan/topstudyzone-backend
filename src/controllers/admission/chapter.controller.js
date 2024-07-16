@@ -1,20 +1,14 @@
-const Subject = require("../../models/academy/subject.model");
-const Class = require("../../models/academy/class.model");
+const Chapter = require("../../models/admission/chapter.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
-    const result = await Subject.create(data);
+    const result = await Chapter.create(data);
 
     if (result?._id) {
-      await Class.updateOne(
-        { _id: data?.class },
-        { $push: { subjects: result?._id } }
-      );
-
       res.status(200).json({
         success: true,
-        message: "Subject add success",
+        message: "Chapter add success",
         data: result,
       });
     } else {
@@ -33,17 +27,16 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { cls } = req.query;
+  const { subject } = req.query;
   try {
     let query = {};
-    if (cls && cls !== "undefined") query.class = cls;
+    if (subject && subject != "undefined" && subject != "null")
+      query.subject = subject;
 
-    const result = await Subject.find(query)
-      .populate("category class chapters")
-      .sort("order");
+    const result = await Chapter.find(query).populate("subject");
     res.status(200).json({
       success: true,
-      message: "Subjects get success",
+      message: "Chapters get success",
       data: result,
     });
   } catch (err) {
@@ -55,14 +48,12 @@ exports.get = async (req, res) => {
 };
 
 exports.getSingle = async (req, res) => {
-  const id = req?.params?.id;
+  const id = req.params.id;
   try {
-    const result = await Subject.findById(id).populate(
-      "category class chapters"
-    );
+    const result = await Chapter.findById(id).populate("subject");
     res.status(200).json({
       success: true,
-      message: "Subject get success",
+      message: "Chapter get success",
       data: result,
     });
   } catch (err) {
@@ -78,29 +69,29 @@ exports.update = async (req, res) => {
   const data = req?.body;
 
   try {
-    const isExist = await Subject.findById(id);
+    const isExist = await Chapter.findById(id);
 
     if (!isExist) {
       return res.status(404).json({
         success: false,
-        error: "Subject not found",
+        error: "Chapter not found",
       });
     }
 
-    const result = await Subject.findByIdAndUpdate(id, data, {
+    const result = await Chapter.findByIdAndUpdate(id, data, {
       new: true,
     });
 
-    if (!result) {
+    if (!result?._id) {
       return res.status(404).json({
         success: false,
-        error: "Subject not updated",
+        error: "Chapter not updated",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Subject updated success",
+      message: "Chapter updated success",
       data: result,
     });
   } catch (error) {
@@ -114,25 +105,21 @@ exports.update = async (req, res) => {
 exports.destoy = async (req, res) => {
   try {
     const { id } = req?.params;
-    const subject = await Subject.findById(id);
+    const chapter = await Chapter.findById(id);
 
-    if (!subject) {
+    if (!chapter) {
       return res.status(400).json({
         success: false,
-        error: "subject not found!",
+        error: "chapter not found!",
       });
     }
 
-    const clas = subject?.class;
-
-    const result = await Subject.findByIdAndDelete(id);
+    const result = await Chapter.findByIdAndDelete(id);
 
     if (result?._id) {
-      await Class.updateOne({ _id: clas }, { $pull: { subjects: id } });
-
       res.status(200).json({
         success: true,
-        message: "Subject delete success",
+        message: "Chapter delete success",
         data: result,
       });
     } else {

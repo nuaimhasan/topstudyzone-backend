@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-const administratorSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -29,7 +29,7 @@ const administratorSchema = new mongoose.Schema(
   }
 );
 
-administratorSchema.pre("save", async function (next) {
+adminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
@@ -39,6 +39,6 @@ administratorSchema.pre("save", async function (next) {
   next();
 });
 
-const Administrator = mongoose.model("Administrator", administratorSchema);
+const Admin = mongoose.model("Admin", adminSchema);
 
-module.exports = Administrator;
+module.exports = Admin;

@@ -1,5 +1,4 @@
-const Subject = require("../../models/academy/subject.model");
-const Class = require("../../models/academy/class.model");
+const Subject = require("../../models/admission/subject.model");
 
 exports.insert = async (req, res) => {
   try {
@@ -7,11 +6,6 @@ exports.insert = async (req, res) => {
     const result = await Subject.create(data);
 
     if (result?._id) {
-      await Class.updateOne(
-        { _id: data?.class },
-        { $push: { subjects: result?._id } }
-      );
-
       res.status(200).json({
         success: true,
         message: "Subject add success",
@@ -21,7 +15,6 @@ exports.insert = async (req, res) => {
       res.status(400).json({
         success: false,
         message: "something went wront!",
-        data: result,
       });
     }
   } catch (err) {
@@ -33,14 +26,9 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { cls } = req.query;
   try {
-    let query = {};
-    if (cls && cls !== "undefined") query.class = cls;
+    const result = await Subject.find({});
 
-    const result = await Subject.find(query)
-      .populate("category class chapters")
-      .sort("order");
     res.status(200).json({
       success: true,
       message: "Subjects get success",
@@ -57,9 +45,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Subject.findById(id).populate(
-      "category class chapters"
-    );
+    const result = await Subject.findById(id);
     res.status(200).json({
       success: true,
       message: "Subject get success",
@@ -91,7 +77,7 @@ exports.update = async (req, res) => {
       new: true,
     });
 
-    if (!result) {
+    if (!result?._id) {
       return res.status(404).json({
         success: false,
         error: "Subject not updated",
@@ -123,13 +109,9 @@ exports.destoy = async (req, res) => {
       });
     }
 
-    const clas = subject?.class;
-
     const result = await Subject.findByIdAndDelete(id);
 
     if (result?._id) {
-      await Class.updateOne({ _id: clas }, { $pull: { subjects: id } });
-
       res.status(200).json({
         success: true,
         message: "Subject delete success",
