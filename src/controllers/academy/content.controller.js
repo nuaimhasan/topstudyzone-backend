@@ -24,15 +24,29 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { chapter } = req.query;
+  const { category, cls, subject, chapter, subChapter, subSubChapter } =
+    req.query;
 
   try {
     let query = {};
-    if (chapter && chapter !== "undefined" && chapter !== "null")
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+    if (cls && cls != "undefined" && cls != "null") query.class = cls;
+    if (subject && subject != "undefined" && subject != "null")
+      query.subject = subject;
+    if (chapter && chapter != "undefined" && chapter != "null")
       query.chapter = chapter;
+    if (subChapter && subChapter != "undefined" && subChapter != "null")
+      query.subChapter = subChapter;
+    if (
+      subSubChapter &&
+      subSubChapter != "undefined" &&
+      subSubChapter != "null"
+    )
+      query.subSubChapter = subSubChapter;
 
     const result = await Content.find(query).populate(
-      "category class subject chapter"
+      "category class subject chapter subChapter subSubChapter"
     );
 
     res.status(200).json({
