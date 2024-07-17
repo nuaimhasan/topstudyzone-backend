@@ -1,20 +1,21 @@
-const Subject = require("../../models/admission/subject.model");
+const Chapter = require("../../models/academy/subSubChapter.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
-    const result = await Subject.create(data);
+    const result = await Chapter.create(data);
 
     if (result?._id) {
       res.status(200).json({
         success: true,
-        message: "Subject add success",
+        message: "Sub Sub Chapter add success",
         data: result,
       });
     } else {
       res.status(400).json({
         success: false,
         message: "something went wront!",
+        data: result,
       });
     }
   } catch (err) {
@@ -26,12 +27,25 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
+  const { category, cls, subject, chapter, subChapter } = req.query;
   try {
-    const result = await Subject.find({});
+    let query = {};
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+    if (cls && cls != "undefined" && cls != "null") query.class = cls;
+    if (subject && subject != "undefined" && subject != "null")
+      query.subject = subject;
+    if (chapter && chapter != "undefined" && chapter != "null")
+      query.chapter = chapter;
+    if (subChapter && subChapter != "undefined" && subChapter != "null")
+      query.subChapter = subChapter;
 
+    const result = await Chapter.find(query).populate(
+      "category class subject chapter subChapter"
+    );
     res.status(200).json({
       success: true,
-      message: "Subjects get success",
+      message: "Sub Sub Chapters get success",
       data: result,
     });
   } catch (err) {
@@ -43,12 +57,14 @@ exports.get = async (req, res) => {
 };
 
 exports.getSingle = async (req, res) => {
-  const id = req?.params?.id;
+  const id = req.params.id;
   try {
-    const result = await Subject.findById(id);
+    const result = await Chapter.findById(id).populate(
+      "category class subject chapter subChapter"
+    );
     res.status(200).json({
       success: true,
-      message: "Subject get success",
+      message: "Sub Sub Chapter get success",
       data: result,
     });
   } catch (err) {
@@ -64,29 +80,29 @@ exports.update = async (req, res) => {
   const data = req?.body;
 
   try {
-    const isExist = await Subject.findById(id);
+    const isExist = await Chapter.findById(id);
 
     if (!isExist) {
       return res.status(404).json({
         success: false,
-        error: "Subject not found",
+        error: "Sub Sub Chapter not found",
       });
     }
 
-    const result = await Subject.findByIdAndUpdate(id, data, {
+    const result = await Chapter.findByIdAndUpdate(id, data, {
       new: true,
     });
 
-    if (!result?._id) {
+    if (!result) {
       return res.status(404).json({
         success: false,
-        error: "Subject not updated",
+        error: "Sub Sub Chapter not updated",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Subject updated success",
+      message: "Sub Sub Chapter updated success",
       data: result,
     });
   } catch (error) {
@@ -100,21 +116,21 @@ exports.update = async (req, res) => {
 exports.destoy = async (req, res) => {
   try {
     const { id } = req?.params;
-    const subject = await Subject.findById(id);
+    const chapter = await Chapter.findById(id);
 
-    if (!subject) {
+    if (!chapter) {
       return res.status(400).json({
         success: false,
-        error: "subject not found!",
+        error: "Sub Sub chapter not found!",
       });
     }
 
-    const result = await Subject.findByIdAndDelete(id);
+    const result = await Chapter.findByIdAndDelete(id);
 
     if (result?._id) {
       res.status(200).json({
         success: true,
-        message: "Subject delete success",
+        message: "Sub Sub Chapter delete success",
         data: result,
       });
     } else {

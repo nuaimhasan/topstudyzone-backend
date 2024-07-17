@@ -1,46 +1,36 @@
 const mongoose = require("mongoose");
 
-const contentSchema = new mongoose.Schema(
+const subChapterSchema = new mongoose.Schema(
   {
-    content: {
+    name: {
       type: String,
       require: true,
       unique: false,
     },
+    order: {
+      type: Number,
+      require: true,
+    },
     category: {
       type: mongoose.Types.ObjectId,
       ref: "AcademyCategory",
-      require: true,
     },
     class: {
       type: mongoose.Types.ObjectId,
       ref: "Class",
-      require: true,
     },
     subject: {
       type: mongoose.Types.ObjectId,
       ref: "Subject",
-      require: true,
     },
     chapter: {
       type: mongoose.Types.ObjectId,
       ref: "Chapter",
-      require: true,
-    },
-    subChapter: {
-      type: mongoose.Types.ObjectId,
-      ref: "SubChapter",
-      required: false,
-    },
-    subSubChapter: {
-      type: mongoose.Types.ObjectId,
-      ref: "SubSubChapter",
-      required: false,
     },
   },
   { timestamps: false }
 );
 
-const Content = mongoose.model("Content", contentSchema);
+const SubChapter = mongoose.model("SubChapter", subChapterSchema);
 
-module.exports = Content;
+module.exports = SubChapter;

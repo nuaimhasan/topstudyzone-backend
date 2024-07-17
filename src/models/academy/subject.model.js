@@ -7,19 +7,14 @@ const subjectSchema = new mongoose.Schema(
       require: true,
       unique: false,
     },
-    order: {
-      type: Number,
-      require: true,
-    },
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "Category",
+      ref: "AcademyCategory",
     },
     class: {
       type: mongoose.Types.ObjectId,
       ref: "Class",
     },
-    chapters: [{ type: mongoose.Types.ObjectId, ref: "Chapter" }],
   },
   { timestamps: false }
 );

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema(
   {
+    uuid: {
+      type: String,
+      require: true,
+      unique: true,
+    },
     name: {
       type: String,
       require: true,
@@ -11,11 +16,13 @@ const categorySchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
-    classes: [{ type: mongoose.Types.ObjectId, ref: "Class" }],
+    fixed: {
+      type: Boolean,
+    },
   },
   { timestamps: false }
 );
 
-const Category = mongoose.model("Category", categorySchema);
+const AcademyCategory = mongoose.model("AcademyCategory", categorySchema);
 
-module.exports = Category;
+module.exports = AcademyCategory;

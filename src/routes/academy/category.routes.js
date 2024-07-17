@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
   get,
   insert,
@@ -6,7 +7,6 @@ const {
   destoy,
   getSingle,
 } = require("../../controllers/academy/category.controller");
-const router = express.Router();
 
 router.get("/all", get);
 router.get("/:id", getSingle);

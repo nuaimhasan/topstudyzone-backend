@@ -1,4 +1,4 @@
-const Chapter = require("../../models/admission/chapter.model");
+const Chapter = require("../../models/academy/subChapter.model");
 
 exports.insert = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ exports.insert = async (req, res) => {
     if (result?._id) {
       res.status(200).json({
         success: true,
-        message: "Chapter add success",
+        message: "Sub Chapter add success",
         data: result,
       });
     } else {
@@ -27,16 +27,23 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { subject } = req.query;
+  const { category, cls, subject, chapter } = req.query;
   try {
     let query = {};
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+    if (cls && cls != "undefined" && cls != "null") query.class = cls;
     if (subject && subject != "undefined" && subject != "null")
       query.subject = subject;
+    if (chapter && chapter != "undefined" && chapter != "null")
+      query.chapter = chapter;
 
-    const result = await Chapter.find(query).populate("subject");
+    const result = await Chapter.find(query).populate(
+      "category class subject chapter"
+    );
     res.status(200).json({
       success: true,
-      message: "Chapters get success",
+      message: "Sub Chapters get success",
       data: result,
     });
   } catch (err) {
@@ -50,7 +57,9 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req.params.id;
   try {
-    const result = await Chapter.findById(id).populate("subject");
+    const result = await Chapter.findById(id).populate(
+      "category class subject chapter"
+    );
     res.status(200).json({
       success: true,
       message: "Chapter get success",
@@ -74,7 +83,7 @@ exports.update = async (req, res) => {
     if (!isExist) {
       return res.status(404).json({
         success: false,
-        error: "Chapter not found",
+        error: "Sub Chapter not found",
       });
     }
 
@@ -82,16 +91,16 @@ exports.update = async (req, res) => {
       new: true,
     });
 
-    if (!result?._id) {
+    if (!result) {
       return res.status(404).json({
         success: false,
-        error: "Chapter not updated",
+        error: "Sub Chapter not updated",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Chapter updated success",
+      message: "Sub Chapter updated success",
       data: result,
     });
   } catch (error) {
@@ -110,7 +119,7 @@ exports.destoy = async (req, res) => {
     if (!chapter) {
       return res.status(400).json({
         success: false,
-        error: "chapter not found!",
+        error: "Sub chapter not found!",
       });
     }
 
@@ -119,7 +128,7 @@ exports.destoy = async (req, res) => {
     if (result?._id) {
       res.status(200).json({
         success: true,
-        message: "Chapter delete success",
+        message: "Sub Chapter delete success",
         data: result,
       });
     } else {

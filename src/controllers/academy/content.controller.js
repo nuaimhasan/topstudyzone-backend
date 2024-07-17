@@ -3,7 +3,12 @@ const Content = require("../../models/academy/content.model");
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
-    const result = await Content.create(data);
+    const newData = {
+      ...data,
+      subChapter: data?.subChapter ? data?.subChapter : undefined,
+      subSubChapter: data?.subSubChapter ? data?.subSubChapter : undefined,
+    };
+    const result = await Content.create(newData);
 
     res.status(200).json({
       success: true,

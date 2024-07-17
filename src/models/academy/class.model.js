@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const classSchema = new mongoose.Schema(
   {
+    uuid: {
+      type: String,
+      require: true,
+      unique: true,
+    },
     name: {
       type: String,
       require: true,
@@ -10,11 +15,13 @@ const classSchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
+    fixed: {
+      type: Boolean,
+    },
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "Category",
+      ref: "AcademyCategory",
     },
-    subjects: [{ type: mongoose.Types.ObjectId, ref: "Subject" }],
   },
   { timestamps: false }
 );

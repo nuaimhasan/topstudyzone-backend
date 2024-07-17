@@ -1,5 +1,4 @@
 const Chapter = require("../../models/academy/chapter.model");
-const Subject = require("../../models/academy/subject.model");
 
 exports.insert = async (req, res) => {
   try {
@@ -7,11 +6,6 @@ exports.insert = async (req, res) => {
     const result = await Chapter.create(data);
 
     if (result?._id) {
-      await Subject.updateOne(
-        { _id: data?.subject },
-        { $push: { chapters: result?._id } }
-      );
-
       res.status(200).json({
         success: true,
         message: "Chapter add success",
@@ -33,10 +27,14 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { subject } = req.query;
+  const { category, cls, subject } = req.query;
   try {
     let query = {};
-    if (subject) query.subject = subject;
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+    if (cls && cls != "undefined" && cls != "null") query.class = cls;
+    if (subject && subject != "undefined" && subject != "null")
+      query.subject = subject;
 
     const result = await Chapter.find(query).populate("category class subject");
     res.status(200).json({
@@ -126,8 +124,6 @@ exports.destoy = async (req, res) => {
     const result = await Chapter.findByIdAndDelete(id);
 
     if (result?._id) {
-      await Subject.updateOne({ _id: subject }, { $pull: { chapters: id } });
-
       res.status(200).json({
         success: true,
         message: "Chapter delete success",

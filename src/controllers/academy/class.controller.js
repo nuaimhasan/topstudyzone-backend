@@ -1,17 +1,17 @@
 const Class = require("../../models/academy/class.model");
-const Category = require("../../models/academy/category.model");
 
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
-    const result = await Class.create(data);
+    const newData = {
+      ...data,
+      fixed: true,
+      uuid: 200 + data?.order,
+    };
+
+    const result = await Class.create(newData);
 
     if (result?._id) {
-      await Category.updateOne(
-        { _id: data?.category },
-        { $push: { classes: result?._id } }
-      );
-
       res.status(200).json({
         success: true,
         message: "Class add success",
@@ -36,11 +36,10 @@ exports.get = async (req, res) => {
   const { category } = req.query;
   try {
     let query = {};
-    if (category) query.category = category;
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
 
-    const result = await Class.find(query)
-      .populate("category subjects")
-      .sort("order");
+    const result = await Class.find(query).populate("category").sort("order");
 
     res.status(200).json({
       success: true,
@@ -58,7 +57,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Class.findById(id).populate("category subjects");
+    const result = await Class.findById(id).populate("category");
     res.status(200).json({
       success: true,
       message: "Class get success",
@@ -127,8 +126,6 @@ exports.destoy = async (req, res) => {
     const result = await Class.findByIdAndDelete(id);
 
     if (result?._id) {
-      await Category.updateOne({ _id: category }, { $pull: { classes: id } });
-
       res.status(200).json({
         success: true,
         message: "Class delete success",

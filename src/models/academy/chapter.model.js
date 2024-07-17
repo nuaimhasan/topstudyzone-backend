@@ -13,7 +13,7 @@ const chapterSchema = new mongoose.Schema(
     },
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "Category",
+      ref: "AcademyCategory",
     },
     class: {
       type: mongoose.Types.ObjectId,

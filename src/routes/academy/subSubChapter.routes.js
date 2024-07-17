@@ -6,7 +6,7 @@ const {
   insert,
   update,
   destoy,
-} = require("../../controllers/admission/subject.controller");
+} = require("../../controllers/academy/subSubChapter.controller");
 
 router.get("/all", get);
 router.get("/:id", getSingle);

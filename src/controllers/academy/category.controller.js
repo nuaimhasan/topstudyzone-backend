@@ -1,9 +1,14 @@
-const Category = require("../../models/academy/category.model");
+const AcademyCategory = require("../../models/academy/category.model");
 
 exports.insert = async (req, res) => {
   const data = req?.body;
   try {
-    const result = await Category.create(data);
+    const newData = {
+      ...data,
+      fixed: false,
+      uuid: 100 + data?.order,
+    };
+    const result = await AcademyCategory.create(newData);
 
     res.status(200).json({
       success: true,
@@ -20,7 +25,7 @@ exports.insert = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const result = await Category.find({}).populate("classes").sort("order");
+    const result = await AcademyCategory.find({}).sort("order");
     res.status(200).json({
       success: true,
       message: "Categories get success",
@@ -37,7 +42,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Category.findById(id).populate("classes");
+    const result = await AcademyCategory.findById(id);
     res.status(200).json({
       success: true,
       message: "Category get success",
@@ -56,7 +61,7 @@ exports.update = async (req, res) => {
   const data = req?.body;
 
   try {
-    const isExist = await Category.findById(id);
+    const isExist = await AcademyCategory.findById(id);
 
     if (!isExist) {
       return res.status(404).json({
@@ -65,7 +70,7 @@ exports.update = async (req, res) => {
       });
     }
 
-    const result = await Category.findByIdAndUpdate(id, data, {
+    const result = await AcademyCategory.findByIdAndUpdate(id, data, {
       new: true,
     });
 
@@ -91,7 +96,7 @@ exports.update = async (req, res) => {
 
 exports.destoy = async (req, res) => {
   try {
-    const result = await Category.findByIdAndDelete(req?.params?.id);
+    const result = await AcademyCategory.findByIdAndDelete(req?.params?.id);
 
     if (!result) {
       return res.status(404).json({
