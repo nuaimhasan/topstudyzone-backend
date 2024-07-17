@@ -5,7 +5,13 @@ const { pick } = require("../../utils/pick");
 exports.insert = async (req, res) => {
   const data = req?.body;
   try {
-    const result = await AcademyMCQ.create(data);
+    const newData = {
+      ...data,
+      subChapter: data?.subChapter ? data?.subChapter : undefined,
+      subSubChapter: data?.subSubChapter ? data?.subSubChapter : undefined,
+    };
+
+    const result = await AcademyMCQ.create(newData);
 
     res.status(200).json({
       success: true,
@@ -23,18 +29,31 @@ exports.insert = async (req, res) => {
 exports.get = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
   const { page, limit, skip } = calculatePagination(paginationOptions);
-  const { subject, chapter } = req.query;
+  const { category, cls, subject, chapter, subChapter, subSubChapter } =
+    req.query;
+
   try {
     let query = {};
-    if (subject && subject !== "undefined" && subject !== "null")
+    if (category && category != "undefined" && category != "null")
+      query.category = category;
+    if (cls && cls != "undefined" && cls != "null") query.class = cls;
+    if (subject && subject != "undefined" && subject != "null")
       query.subject = subject;
-    if (chapter && chapter !== "undefined" && chapter !== "null")
+    if (chapter && chapter != "undefined" && chapter != "null")
       query.chapter = chapter;
+    if (subChapter && subChapter != "undefined" && subChapter != "null")
+      query.subChapter = subChapter;
+    if (
+      subSubChapter &&
+      subSubChapter != "undefined" &&
+      subSubChapter != "null"
+    )
+      query.subSubChapter = subSubChapter;
 
     const result = await AcademyMCQ.find(query)
       .skip(skip)
       .limit(limit)
-      .populate("category class subject chapter");
+      .populate("category class subject chapter subChapter subSubChapter");
 
     const total = await AcademyMCQ.countDocuments(query);
     const pages = Math.ceil(parseInt(total) / parseInt(limit));

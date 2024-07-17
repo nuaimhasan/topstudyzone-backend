@@ -3,10 +3,21 @@ const Class = require("../../models/academy/class.model");
 exports.insert = async (req, res) => {
   try {
     const data = req?.body;
+    const cls = await Class.find({});
+
+    let uuid = "";
+    if (cls?.length > 0) {
+      cls?.map((c) => {
+        uuid = Math.max(parseInt(c?.uuid)) + 1;
+      });
+    } else {
+      uuid = 200;
+    }
+
     const newData = {
       ...data,
-      fixed: true,
-      uuid: 200 + data?.order,
+      fixed: false,
+      uuid,
     };
 
     const result = await Class.create(newData);

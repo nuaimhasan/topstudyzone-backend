@@ -51,9 +51,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await Subject.findById(id).populate(
-      "category class chapters"
-    );
+    const result = await Subject.findById(id).populate("category class");
     res.status(200).json({
       success: true,
       message: "Subject get success",

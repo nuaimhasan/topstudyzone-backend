@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const academyMCQSchema = new mongoose.Schema(
+const MCQSchema = new mongoose.Schema(
   {
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "Category",
+      ref: "AcademyCategory",
     },
     class: {
       type: mongoose.Types.ObjectId,
@@ -17,6 +17,16 @@ const academyMCQSchema = new mongoose.Schema(
     chapter: {
       type: mongoose.Types.ObjectId,
       ref: "Chapter",
+    },
+    subChapter: {
+      type: mongoose.Types.ObjectId,
+      ref: "SubChapter",
+      required: false,
+    },
+    subSubChapter: {
+      type: mongoose.Types.ObjectId,
+      ref: "SubSubChapter",
+      required: false,
     },
     question: {
       type: String,
@@ -48,6 +58,6 @@ const academyMCQSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const AcademyMCQ = mongoose.model("AcademyMCQ", academyMCQSchema);
+const MCQ = mongoose.model("MCQ", MCQSchema);
 
-module.exports = AcademyMCQ;
+module.exports = MCQ;
