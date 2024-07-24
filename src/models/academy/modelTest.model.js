@@ -44,7 +44,7 @@ const modelTestSchema = new mongoose.Schema(
     },
     mcqs: [
       {
-        mcq: { type: mongoose.Types.ObjectId, ref: "AcademyMCQ" },
+        mcq: { type: mongoose.Types.ObjectId, ref: "MCQ" },
         rightAns: { type: String },
         selectedAns: { type: String },
       },

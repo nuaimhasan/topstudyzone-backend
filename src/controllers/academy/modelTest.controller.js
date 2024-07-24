@@ -59,7 +59,7 @@ exports.get = async (req, res) => {
 exports.getSingle = async (req, res) => {
   const id = req?.params?.id;
   try {
-    const result = await ModelTest.findById(id);
+    const result = await ModelTest.findById(id).populate("subject mcqs.mcq");
     res.status(200).json({
       success: true,
       message: "Model Test get success",

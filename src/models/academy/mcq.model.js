@@ -54,6 +54,9 @@ const MCQSchema = new mongoose.Schema(
     view: {
       type: Number,
     },
+    tags: {
+      type: Array,
+    },
   },
   { timestamps: true }
 );
