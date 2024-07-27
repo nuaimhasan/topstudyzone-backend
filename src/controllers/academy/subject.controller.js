@@ -1,4 +1,5 @@
 const Subject = require("../../models/academy/subject.model");
+const Cls = require("../../models/academy/class.model");
 
 exports.insert = async (req, res) => {
   try {
@@ -27,12 +28,20 @@ exports.insert = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const { cls, category } = req.query;
+  const { cls, classuuid, category } = req.query;
   try {
     let query = {};
     if (cls && cls != "undefined" && cls != "null") query.class = cls;
     if (category && category != "undefined" && category != "null")
       query.category = category;
+
+    let clsId = "";
+    if (classuuid) {
+      let cls = await Cls.findOne({ uuid: classuuid });
+      clsId = cls?._id;
+    }
+
+    if (clsId && clsId != "undefined" && clsId != "null") query.class = clsId;
 
     const result = await Subject.find(query).populate("category class");
     res.status(200).json({
