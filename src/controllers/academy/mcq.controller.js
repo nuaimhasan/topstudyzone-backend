@@ -29,7 +29,7 @@ exports.insert = async (req, res) => {
 exports.get = async (req, res) => {
   const paginationOptions = pick(req.query, ["page", "limit"]);
   const { page, limit, skip } = calculatePagination(paginationOptions);
-  const { category, cls, subject, chapter, subChapter, subSubChapter } =
+  const { category, cls, subject, chapter, subChapter, subSubChapter, set } =
     req.query;
 
   try {
@@ -49,6 +49,8 @@ exports.get = async (req, res) => {
       subSubChapter != "null"
     )
       query.subSubChapter = subSubChapter;
+
+    if (set && set != "undefined" && set != "null") query["tags._id"] = set;
 
     const result = await AcademyMCQ.find(query)
       .skip(skip)
