@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const questionSetSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       require: true,
     },
@@ -10,15 +10,10 @@ const questionSetSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    subject: [
-      {
-        subejct: { type: mongoose.Types.ObjectId, ref: "AdmissionSubject" },
-        mcq: [{ type: mongoose.Types.ObjectId, ref: "AdmissionMCQ" }],
-      },
-    ],
     university: {
       type: mongoose.Types.ObjectId,
       ref: "University",
+      require: true,
     },
   },
   { timestamps: false }

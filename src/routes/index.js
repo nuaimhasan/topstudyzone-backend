@@ -32,7 +32,11 @@ router.use("/academy/modelTest", modelTestRouters);
 // Admission Routes
 //------------------------------------------------------------------------------
 const universityRoutes = require("./admission/university.routes");
+const questionSetRoutes = require("./admission/questionSet.routes");
+const admissionMCQRoutes = require("./admission/admissionMCQ.routes");
 
 router.use("/admission/university", universityRoutes);
+router.use("/admission/questionSet", questionSetRoutes);
+router.use("/admission/mcq", admissionMCQRoutes);
 
 module.exports = router;
